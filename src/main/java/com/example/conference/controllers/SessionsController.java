@@ -2,6 +2,7 @@ package com.example.conference.controllers;
 
 import com.example.conference.models.Session;
 import com.example.conference.repositories.SessionRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,5 +29,17 @@ public class SessionsController {
     @PostMapping
     public Session create(@RequestBody Session session){
         return sessionRepository.saveAndFlush(session);
+    }
+
+    @DeleteMapping
+    public void delete(@PathVariable Long id){
+        sessionRepository.deleteById(id);
+    }
+
+    @PutMapping
+    public Session update(@PathVariable Long id, @RequestBody Session session){
+        Session existingSession =sessionRepository.getOne(id);
+        BeanUtils.copyProperties(session,existingSession,"session_id");
+        return sessionRepository.saveAndFlush(existingSession);
     }
 }
